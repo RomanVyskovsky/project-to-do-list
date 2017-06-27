@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: vyskovsky
+ * User:
  * Date: 22.06.2017
  * Time: 17:34
  */
@@ -11,75 +11,170 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Task;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Form\Form;
 use AppBundle\Form\TaskType;
 
 class TaskController extends Controller
 {
   /**
-   * @Route("/form/create")
+   * @Route("/", name="homepage")
+   * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function createFormAction(Request $request)
+  public function indexAction()
   {
-    // create a task and give it some dummy data for this example
+    return $this->render('task/index.html.twig');
+  }
+
+  /**
+   * @Route("/task/list/", name="task_list")
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function listTasksAction()
+  {
+    $taskEntity = $this->getDoctrine()
+      ->getRepository('AppBundle:Task')
+      ->findBy(array('softDelete' => false), array('deadline' => 'ASC', 'id' => 'ASC'));
+
+    return $this->render('task/list.html.twig', array(
+      'taskList' => $taskEntity,
+      'id' => null,
+      'deleted' => null,
+    ));
+  }
+
+  /**
+   * @Route("/task/create", name="task_create")
+   * @param Request $request
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+   */
+  public function createTaskAction(Request $request)
+  {
     $task = new Task();
-    $task->setTask('Write a blog post');
-    $task->setDueDate(new \DateTime('tomorrow'));
 
     $form = $this->createForm(TaskType::class, $task);
-    /*
-    $form = $this->createFormBuilder($task)
-      ->add('task', TextType::class)
-      ->add('dueDate', DateType::class)
-      ->add('save', SubmitType::class, array('label' => 'Create Post'))
-      ->getForm();
-    */
-
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-      // $form->getData() holds the submitted values
-      // but, the original `$task` variable has also been updated
+
       $task = $form->getData();
 
-      // ... perform some action, such as saving the task to the database
-      // for example, if Task is a Doctrine entity, save it!
+      // save task to database
       $em = $this->getDoctrine()->getManager();
       $em->persist($task);
       $em->flush();
 
-      return $this->redirectToRoute('task_success');
+      return $this->redirectToRoute('task_create_success', array('id' => $task->getId()));
     }
 
-    return $this->render('task/taskForm.html.twig', array(
+    return $this->render('task/form.html.twig', array(
       'form' => $form->createView(),
+      'activity' => 'create',
     ));
   }
 
   /**
-   * @Route("/users/success", name="task_success")
+   * @Route("/task/create/success/{id}/", name="task_create_success")
+   * @param Request $request
+   * @param $id
+   * @return \Symfony\Component\HttpFoundation\Response
    */
-  public function successAction(Request $request)
+  public function successCreateAction(Request $request, $id)
   {
-    return $this->render('task/success.html.twig', array(
-      'id' => '1',
+    $taskEntity = $this->getDoctrine()->getRepository('AppBundle:Task')->findOneBy(array('id' => $id));
+
+    return $this->render('task/detail.html.twig', array(
+      'taskEntity' => $taskEntity,
+      'activity' => 'created',
+      'id' => $id,
     ));
   }
 
   /**
-   * @Route("/form/task", name="task_success")
+   * @Route("/task/{id}/", name="task_detail")
+   * @param Request $request
+   * @param $id
+   * @return \Symfony\Component\HttpFoundation\Response
    */
-/*
-  public function postTypeAction(Request $request)
+  public function detailTaskAction(Request $request, $id)
   {
-    $post = new Post();
-    $form = $this->createForm(PostType::class, $post);
+    $taskEntity = $this->getDoctrine()->getRepository('AppBundle:Task')->findOneBy(array('id' => $id));
 
+    return $this->render('task/detail.html.twig', array(
+      'taskEntity' => $taskEntity,
+      'activity' => null,
+      'id' => $id,
+    ));
   }
-*/
 
+  /**
+   * @Route("/task/edit/{id}", name = "task_edit", requirements={"id": "\d+"})
+   * @param Request $request
+   * @param $id
+   * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+   */
+  public function editTaskAction(Request $request, $id)
+  {
+    $taskEntity = $this->getDoctrine()->getRepository('AppBundle:Task')->findOneBy(array('id' => $id));
+
+    $form = $this->createForm(TaskType::class, $taskEntity);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $task = $form->getData();
+
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($task);
+      $em->flush();
+
+      return $this->redirectToRoute('task_update_success', array('id' => $task->getId()));
+    }
+
+    return $this->render('task/form.html.twig', array(
+      'form' => $form->createView(),
+      'activity' => 'edit',
+    ));
+  }
+
+  /**
+   * @Route("/task/edit/success/{id}/", name="task_update_success")
+   * @param Request $request
+   * @param $id
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function successUpdateAction(Request $request, $id)
+  {
+    $taskEntity = $this->getDoctrine()->getRepository('AppBundle:Task')->findOneBy(array('id' => $id));
+
+    return $this->render('task/detail.html.twig', array(
+      'taskEntity' => $taskEntity,
+      'activity' => 'updated',
+      'id' => $id,
+    ));
+  }
+
+  /**
+   * @Route("/task/{id}/delete", name="task_delete_success")
+   * @param $id
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function deleteTaskAction($id)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $taskDeletedEntity = $this->getDoctrine()->getRepository('AppBundle:Task')->findOneBy(array('id' => $id));
+    $taskDeletedEntity->setSoftDelete(true);
+
+    $em->persist($taskDeletedEntity);
+    $em->flush();
+
+    $taskEntity = $this->getDoctrine()
+      ->getRepository('AppBundle:Task')
+      ->findBy(array('softDelete' => false), array('deadline' => 'ASC', 'id' => 'ASC')); // sorting is redundant
+
+    return $this->render('task/list.html.twig', array(
+      'taskList' => $taskEntity,
+      'id' => $id,
+      'deleted' => $taskDeletedEntity,
+    ));
+  }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: vyskovsky
+ * User:
  * Date: 22.06.2017
  * Time: 17:30
  */
@@ -9,10 +9,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
-//use Symfony\Component\Validator\Constraints as Assert;
-//use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-//use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Task
@@ -40,11 +36,32 @@ class Task
   protected $task;
 
   /**
+   * @var string
+   *
+   * @ORM\Column(name="content", type="string", length=10000, nullable=false)
+   */
+  protected $content;
+
+  /**
+   * @var string
+   *
+   * @ORM\Column(name="priority", type="string", length=1000, nullable=false)
+   */
+  protected $priority;
+
+  /**
    * @var \DateTime
    *
-   * @ORM\Column(name="created", type="datetime", nullable=false)
+   * @ORM\Column(name="deadline", type="datetime", nullable=false)
    */
-  protected $dueDate = 'now()';
+  protected $deadline;
+
+  /**
+   * @var boolean
+   *
+   * @ORM\Column(name="softDelete", type="boolean", nullable=false)
+   */
+  protected $softDelete = false;
 
   /**
    * @return int
@@ -79,20 +96,67 @@ class Task
   }
 
   /**
-   * @return \DateTime
+   * @return string
    */
-  public function getDueDate()
+  public function getContent()
   {
-    return $this->dueDate;
+    return $this->content;
   }
 
   /**
-   * @param \DateTime $dueDate
+   * @param string $content
    */
-  public function setDueDate($dueDate)
+  public function setContent($content)
   {
-    $this->dueDate = $dueDate;
+    $this->content = $content;
   }
 
+  /**
+   * @return string
+   */
+  public function getPriority()
+  {
+    return $this->priority;
+  }
+
+  /**
+   * @param string $priority
+   */
+  public function setPriority($priority)
+  {
+    $this->priority = $priority;
+  }
+
+  /**
+   * @return \DateTime
+   */
+  public function getDeadline()
+  {
+    return $this->deadline;
+  }
+
+  /**
+   * @param \DateTime $deadline
+   */
+  public function setDeadline(\DateTime $deadline = null)
+  {
+    $this->deadline = $deadline;
+  }
+
+  /**
+   * @return bool
+   */
+  public function isSoftDelete()
+  {
+    return $this->softDelete;
+  }
+
+  /**
+   * @param bool $softDelete
+   */
+  public function setSoftDelete($softDelete)
+  {
+    $this->softDelete = $softDelete;
+  }
 
 }
