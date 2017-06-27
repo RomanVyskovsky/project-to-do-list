@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {{ parent() }}
+
+  {% if activity == 'created' %}
+    <div class="container">
+      <div class="row">
+        <div class="bs-callout bs-callout-success">
+          <h2>Task "{{ taskEntity.task }}" was created!</h2>
+        </div>
+      </div>
+    </div>
+  {% elseif activity == 'updated' %}
+    <div class="container">
+      <div class="row">
+        <div class="bs-callout bs-callout-warning">
+          <h2>Task "{{ taskEntity.task }}" was edited!</h2>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>{{ taskEntity.task }}</h1>
+      </div>
+      <div class="col-md-12">
+        <h4><b>Task content:</b> {{ taskEntity.content }}</h4>
+      </div>
+      <div class="col-md-12">
+        <h4><b>Task deadline:</b> {{ taskEntity.deadline.date|date('Y-m-d h:i') }}</h4>
+      </div>
+      <div class="col-md-12">
+        <h4><b>Priority:</b> {{ taskEntity.priority }}</h4>
+      </div>
+      <div class="col-md-12">
+        <a href="{{ path('task_edit', {id: taskEntity.id}) }}" class="btn btn-warning glyphicon glyphicon-edit"></a>
+        <a href="{{ path('task_delete_success', {id: taskEntity.id}) }}"
+           class="delete btn btn-danger glyphicon glyphicon-trash"></a>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    $(document).ready(function () {
+      $('.delete').bootstrap_confirm_delete(
+        {
+          message: 'Are you sure you want to delete "{{ taskEntity.task }}" ?'
+        }
+      );
+    });
+  </script>
+{% endblock %}

@@ -1,13 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8"/>
+  <title>
+    {% block title %}{% endblock %}{{ 'To-do list' }}</title>
+
+  {% block stylesheets %}
+    <link href="{{ asset('css/app.css') }}" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap.min.css') }}"/>
+  {% endblock %}
+
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+</head>
+<body>
+
+{% block topbar %}
+  <div class="container">
+    <ul class="nav nav-justified navbar-custom navbar-margin">
+      <li class="active"><a href="{{ path('homepage') }}" class="navbar-font"><b>WELCOME</b></a></li>
+      <li><a href="{{ path('task_list') }}" class="navbar-font">TO-DO LIST</a></li>
+      <li><a href="{{ path('task_create') }}" class="navbar-font">CREATE TASK</a></li>
+    </ul>
+  </div>
+{% endblock %}
+
+{% block body %}
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
+  <script type="text/javascript"
+          src="{{ asset('vendor/bootstrap-confirm-delete/bootstrap-confirm-delete.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+{% endblock %}
+
+
+<footer class="navbar navbar-fixed-bottom">
+  <div class="container">
+    &copy; Made by author for project.
+  </div>
+</footer>
+
+{% block footer %}
+{% endblock %}
+
+</body>
 </html>
+

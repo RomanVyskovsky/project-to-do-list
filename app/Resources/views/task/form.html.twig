@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+
+        {% if activity == 'create' %}
+          <h1><b>Create task</b></h1>
+        {% elseif activity == 'edit' %}
+          <h1><b>Edit task</b></h1>
+        {% endif %}
+
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_start(form) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_row(form.task) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_row(form.content) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_row(form.deadline) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_row(form.priority) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_row(form.save) }}
+      </div>
+      <div class="col-md-12" style="margin-top: 10px;">
+        {{ form_end(form) }}
+      </div>
+    </div>
+  </div>
+{% endblock %}
