@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {{ parent() }}
+
+  {% if deleted != false %}
+    <div class="container">
+      <div class="row">
+        <div class="bs-callout bs-callout-danger">
+          <h2><b>Task "{{ deleted.task }}" was "soft" deleted!</b></h2>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="container" style="padding-top:50px">
+    <table id="myTable3" class="table table-striped table-hover" width="100%">
+      <thead class="thead">
+      <tr>
+        <th>ID</th>
+        <th>Task</th>
+        <th>Deadline</th>
+        <th>Priority</th>
+        <th>Manipulate</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for task in taskList %}{# nebo, ale je poreseno v dql for user in users if user.active #}
+
+        <tr>
+          <td style="width: 10%;">{{ task.id }}</td>
+          <td style="width: 30%;">{{ task.task }}</td>
+          <td style="width: 20%;">{{ task.deadline.date|date('Y-m-d h-i') }}</td>
+
+          {% if task.priority == 'Low' %}
+            <td class="warning" style="width: 10%;">{{ task.priority }}</td>
+          {% elseif task.priority == 'Normal' %}
+            <td class="success" style="width: 10%;">{{ task.priority }}</td>
+          {% elseif task.priority == 'High' %}
+            <td class="danger" style="width: 10%;">{{ task.priority }}</td>
+          {% endif %}
+
+
+          <td style="width: 30%;">
+            <a href="{{ path('task_detail', {id: task.id}) }}" class="btn btn-success  btn-sm" style="width: 32%;">
+              <b>OPEN</b>
+            </a>
+            <a href="{{ path('task_edit', {id: task.id}) }}" class="btn btn-warning  btn-sm" style="width: 32%;">
+              <b>EDIT</b>
+            </a>
+            <a href="{{ path('task_delete_success', {id: task.id}) }}" class="delete btn btn-danger  btn-sm"
+               style="width: 32%;">
+              <b>DELETE</b>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    $(document).ready(function () {
+      $('#myTable3').dataTable(
+        {
+          "order": [[0, "desc"]],
+          'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': [-1] /* 1st one, start by the right */
+          }]
+        }
+      );
+    });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $('.delete').bootstrap_confirm_delete(
+        {
+          message: 'Are you sure you want to delete the task?'
+        }
+      );
+    });
+  </script>
+
+{% endblock %}
+
+
