@@ -36,8 +36,11 @@ Running the new instance
  * run **git clone**
  * run **composer install**
     * setup parameters.yml
+ * run **php bin/console doctrine:database:create**
+ * run **php bin/console doctrine:schema:create**
  * run **bower install**
- * erase cache folder
- 
+ * run **php bin/console cache:clear**
+ * run **php bin/console server:run**
+ * enjoy
 
 
