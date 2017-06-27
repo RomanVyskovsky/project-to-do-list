@@ -8,8 +8,8 @@
 
   {% block stylesheets %}
     <link href="{{ asset('css/app.css') }}" type="text/css" rel="stylesheet"/>
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('css/dataTables.bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('vendor/datatables.net-bs/css/dataTables.bootstrap.min.css') }}"/>
   {% endblock %}
 
   <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
@@ -30,10 +30,10 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/dataTables.bootstrap.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/jquery-3.2.1/dist/jquery.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('vendor/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('js/bootstrap-confirm-delete.js') }}"></script>
   <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
 {% endblock %}
